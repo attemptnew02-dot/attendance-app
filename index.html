@@ -13,11 +13,17 @@
 
 <style>
 *{box-sizing:border-box}
-:root{--green:#075b43;--green2:#0b8b64;--light:#eaf5f1;--line:#e2e9e6;--red:#c62828;--redbg:#ffeded;--shadow:0 8px 28px rgba(16,45,36,.08)}
+:root{
+ --green:#075b43;--green2:#0b8b64;--light:#eaf5f1;
+ --line:#e2e9e6;--red:#c62828;--redbg:#ffeded;
+ --shadow:0 8px 28px rgba(16,45,36,.08)
+}
 body{margin:0;font-family:Arial,sans-serif;background:#f5f7f6;color:#17221e}
-.app{max-width:1100px;margin:auto;min-height:100vh;background:#f5f7f6}
+button,input{font:inherit}
+button{cursor:pointer}
+.app{max-width:1100px;margin:auto;min-height:100vh;background:#f5f7f6;display:none}
 .top{background:linear-gradient(135deg,#063d2e,#087456);color:white;padding:18px;position:sticky;top:0;z-index:10}
-.topline{display:flex;justify-content:space-between;align-items:center}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:12px}
 .brand{font-size:21px;font-weight:800}
 .sub{font-size:12px;opacity:.8;margin-top:3px}
 .content{padding:16px}
@@ -30,18 +36,19 @@ body{margin:0;font-family:Arial,sans-serif;background:#f5f7f6;color:#17221e}
 .stat .value{font-size:29px;font-weight:850;margin-top:5px}
 .green{color:var(--green2)}
 .actions{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.action{min-height:105px;text-align:left;padding:18px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);color:#17342b;cursor:pointer}
+.action{min-height:105px;text-align:left;padding:18px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);color:#17342b}
 .action b{display:block;font-size:16px;margin-bottom:7px}
 .action span{font-size:12px;color:#73817c}
-.btn{border:0;border-radius:11px;padding:11px 15px;font-weight:750;cursor:pointer}
+.btn{border:0;border-radius:11px;padding:11px 15px;font-weight:750}
 .primary{background:var(--green2);color:#fff}
 .secondary{background:var(--light);color:var(--green)}
 .danger{background:var(--redbg);color:var(--red)}
+.btn:disabled{opacity:.6;cursor:wait}
 .back{margin-bottom:12px}
 .head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:13px}
 .head h2{margin:0;font-size:20px}
 .muted{color:#6e7b76;font-size:13px}
-input{width:100%;padding:13px;border:1px solid #cfdad5;border-radius:11px;font-size:15px;outline:none}
+input{width:100%;padding:13px;border:1px solid #cfdad5;border-radius:11px;font-size:15px;outline:none;background:white}
 input:focus{border-color:var(--green2)}
 .search{margin-bottom:12px}
 .list{border-top:1px solid var(--line)}
@@ -54,13 +61,13 @@ table{width:100%;border-collapse:collapse;min-width:720px;background:white}
 th{background:#f0f6f3;color:#35564b;font-size:12px;text-transform:uppercase;letter-spacing:.3px}
 th,td{padding:12px 9px;border-bottom:1px solid var(--line);text-align:left}
 tbody tr:last-child td{border-bottom:0}
-.att{padding:8px 11px;border-radius:9px;border:0;font-weight:750;cursor:pointer}
+.att{padding:8px 11px;border-radius:9px;border:0;font-weight:750;white-space:nowrap}
 .p{background:#dff7ed;color:#087151}
 .a{background:#ffe3e3;color:#a51f1f}
-.att.selected{box-shadow:0 0 0 3px rgba(7,91,67,.18);transform:scale(1.02)}
-.savebar{position:sticky;bottom:0;background:rgba(245,247,246,.95);padding:12px 0;margin-top:12px}
+.att.selected{box-shadow:0 0 0 3px rgba(7,91,67,.18)}
+.savebar{position:sticky;bottom:0;background:rgba(245,247,246,.96);padding:12px 0;margin-top:12px}
 .savebig{width:100%;font-size:16px;padding:15px}
-.badge{padding:5px 9px;border-radius:30px;font-size:11px;font-weight:800}
+.badge{padding:5px 9px;border-radius:30px;font-size:11px;font-weight:800;display:inline-block}
 .bp{background:#dff7ed;color:#087151}
 .ba{background:#ffe3e3;color:#a51f1f}
 .record{padding:15px 0;border-bottom:1px solid var(--line)}
@@ -73,152 +80,173 @@ tbody tr:last-child td{border-bottom:0}
 .mini b{font-size:20px;display:block;margin-top:4px}
 .modalbg{position:fixed;inset:0;background:rgba(0,0,0,.52);display:none;align-items:center;justify-content:center;padding:16px;z-index:30}
 .modalbg.show{display:flex}
-.modal{background:#fff;border-radius:19px;width:100%;max-width:480px;padding:20px}
+.modal{background:#fff;border-radius:19px;width:100%;max-width:480px;padding:20px;max-height:90vh;overflow:auto}
 .modal h3{margin-top:0}
 .field{margin:12px 0}
 .field label{display:block;font-weight:750;font-size:13px;margin-bottom:6px}
-.toast{position:fixed;top:17px;left:50%;transform:translate(-50%,-150%);z-index:50;background:#075b43;color:white;border-radius:13px;padding:13px 18px;font-weight:800;box-shadow:0 10px 30px #0003;transition:.3s;max-width:90%;text-align:center}
+.toast{position:fixed;top:17px;left:50%;transform:translate(-50%,-150%);z-index:50;background:#075b43;color:white;border-radius:13px;padding:13px 18px;font-weight:800;box-shadow:0 10px 30px #0003;transition:.25s;max-width:90%;text-align:center}
 .toast.show{transform:translate(-50%,0)}
 .empty{text-align:center;padding:25px;color:#78847f}
 .footer{text-align:center;padding:25px;color:#78847f;font-size:13px}
-.firebase-status{position:fixed;bottom:12px;right:12px;z-index:40;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);border-radius:20px;padding:7px 12px;font-size:11px;font-weight:700;color:#087151}
+
+/* Login */
+#loginScreen{
+ display:none;min-height:100vh;padding:22px;align-items:center;
+ justify-content:center;background:linear-gradient(135deg,#eaf5f1,#f5f7f6)
+}
+#loginScreen.show{display:flex}
+.login-card{
+ width:100%;max-width:400px;padding:28px 23px;background:#fff;
+ border-radius:20px;box-shadow:0 8px 28px rgba(16,45,36,.12)
+}
+.login-logo{
+ width:65px;height:65px;margin:0 auto 16px;border-radius:18px;
+ background:#075b43;color:white;display:grid;place-items:center;
+ font-size:22px;font-weight:800
+}
+.login-card h1{text-align:center;font-size:24px;margin:0 0 8px}
+.login-subtitle{text-align:center;color:#73817c;font-size:13px;margin-bottom:24px}
+.login-card label{display:block;font-size:13px;font-weight:700;margin:15px 0 7px}
+.login-card input{font-size:16px}
+.login-card button{width:100%;margin-top:20px;padding:14px}
+#loginMessage{display:none;margin-top:14px;color:#b42318;font-size:13px;line-height:1.5}
+#loginMessage.show{display:block}
+.login-note{text-align:center;color:#78847f;font-size:12px;margin:18px 0 0}
+
 @media(max-width:700px){
-.stats{grid-template-columns:repeat(2,1fr)}
-.actions{grid-template-columns:1fr}
-.content{padding:12px}
-.four{grid-template-columns:repeat(2,1fr)}
-.student{align-items:flex-start;flex-direction:column}
-.top{padding:15px}
-.brand{font-size:19px}
+ .stats{grid-template-columns:repeat(2,1fr)}
+ .actions{grid-template-columns:1fr}
+ .content{padding:12px}
+ .four{grid-template-columns:repeat(2,1fr)}
+ .student{align-items:flex-start;flex-direction:column}
+ .top{padding:15px}
+ .brand{font-size:19px}
+ .head{align-items:flex-start}
 }
 </style>
 </head>
 
 <body>
+
+<!-- LOGIN SCREEN -->
+<section id="loginScreen">
+ <div class="login-card">
+  <div class="login-logo">12</div>
+  <h1>Admin Login</h1>
+  <p class="login-subtitle">12 Class Attendance Management System</p>
+
+  <form id="loginForm">
+   <label for="loginEmail">Admin Email</label>
+   <input id="loginEmail" type="email" autocomplete="username"
+          placeholder="Enter admin email" required>
+
+   <label for="loginPassword">Password</label>
+   <input id="loginPassword" type="password" autocomplete="current-password"
+          placeholder="Enter password" required>
+
+   <button id="loginButton" class="btn primary" type="submit">Login</button>
+   <div id="loginMessage" role="alert"></div>
+  </form>
+
+  <p class="login-note">Authorized administrator only</p>
+ </div>
+</section>
+
+<!-- MAIN APP -->
 <div class="app">
 
 <header class="top">
-<div class="topline">
-<div>
-<div class="brand">12 Class Attendance</div>
-<div class="sub">Professional Class Attendance Software</div>
-</div>
-<div>📋</div>
-</div>
+ <div class="topline">
+  <div>
+   <div class="brand">12 Class Attendance</div>
+   <div class="sub">Professional Class Attendance Software</div>
+  </div>
+  <button id="logoutButton" class="btn secondary" type="button">Logout</button>
+ </div>
 </header>
 
 <main class="content">
 
 <section id="home" class="page active">
-<div class="stats">
-<div class="card stat">
-<div class="label">TOTAL STUDENTS</div>
-<div id="sTotal" class="value">0</div>
-</div>
-<div class="card stat">
-<div class="label">PRESENT TODAY</div>
-<div id="sPresent" class="value green">0</div>
-</div>
-<div class="card stat">
-<div class="label">ABSENT TODAY</div>
-<div id="sAbsent" class="value" style="color:#c62828">0</div>
-</div>
-<div class="card stat">
-<div class="label">ATTENDANCE TODAY</div>
-<div id="sPercent" class="value">0%</div>
-</div>
-</div>
+ <div class="stats">
+  <div class="card stat"><div class="label">TOTAL STUDENTS</div><div id="sTotal" class="value">0</div></div>
+  <div class="card stat"><div class="label">PRESENT TODAY</div><div id="sPresent" class="value green">0</div></div>
+  <div class="card stat"><div class="label">ABSENT TODAY</div><div id="sAbsent" class="value" style="color:#c62828">0</div></div>
+  <div class="card stat"><div class="label">ATTENDANCE TODAY</div><div id="sPercent" class="value">0%</div></div>
+ </div>
 
-<div class="card">
-<h3 style="margin-top:0">Quick Actions</h3>
-<div class="actions">
-<button class="action" onclick="openPage('students');renderStudents()">
-<b>👨‍🎓 Students</b>
-<span>Add, edit, search and manage your whole class.</span>
-</button>
-<button class="action" onclick="openPage('attendance');startAttendance()">
-<b>✓ Take Attendance</b>
-<span>Select a date and mark the complete class.</span>
-</button>
-<button class="action" onclick="openPage('records');renderRecords()">
-<b>▣ Attendance Records</b>
-<span>View every saved day and full class details.</span>
-</button>
-</div>
-</div>
+ <div class="card">
+  <h3 style="margin-top:0">Quick Actions</h3>
+  <div class="actions">
+   <button class="action" onclick="openPage('students');renderStudents()">
+    <b>👨‍🎓 Students</b><span>Add, edit, search and manage your class.</span>
+   </button>
+   <button class="action" onclick="openPage('attendance');startAttendance()">
+    <b>✓ Take Attendance</b><span>Select a date and mark the complete class.</span>
+   </button>
+   <button class="action" onclick="openPage('records');renderRecords()">
+    <b>▣ Attendance Records</b><span>View saved days and class reports.</span>
+   </button>
+  </div>
+ </div>
 
-<div class="card">
-<b>How it works</b>
-<p class="muted">Add students once. Choose a date, mark Present or Absent for everyone, then save. Data is stored in Firebase Cloud.</p>
-</div>
+ <div class="card">
+  <b>How it works</b>
+  <p class="muted">Add students once. Choose a date, mark Present or Absent for everyone, then save. Your data is stored in Firebase Cloud.</p>
+ </div>
 </section>
 
 <section id="students" class="page">
-<button class="btn secondary back" onclick="openPage('home')">← Home</button>
-<div class="card">
-<div class="head">
-<h2>Students</h2>
-<button class="btn primary" onclick="openStudentModal()">+ Add Student</button>
-</div>
-<input class="search" id="search" placeholder="Search name, father name or roll number" oninput="renderStudents()">
-<div id="studentList" class="list"></div>
-</div>
+ <button class="btn secondary back" onclick="openPage('home')">← Home</button>
+ <div class="card">
+  <div class="head">
+   <h2>Students</h2>
+   <button class="btn primary" onclick="openStudentModal()">+ Add Student</button>
+  </div>
+  <input class="search" id="search" placeholder="Search name, father name or roll number" oninput="renderStudents()">
+  <div id="studentList" class="list"></div>
+ </div>
 </section>
 
 <section id="attendance" class="page">
-<button class="btn secondary back" onclick="openPage('home')">← Home</button>
-<div class="card">
-<div class="head">
-<div>
-<h2>Take Attendance</h2>
-<div class="muted">Full class attendance sheet</div>
-</div>
-</div>
-<div class="field">
-<label>Attendance Date</label>
-<input type="date" id="attDate" onchange="loadSheet()">
-</div>
-<div id="sheet"></div>
-<div class="savebar">
-<button class="btn primary savebig" onclick="saveAttendance()">✓ SAVE ATTENDANCE</button>
-</div>
-</div>
+ <button class="btn secondary back" onclick="openPage('home')">← Home</button>
+ <div class="card">
+  <div class="head"><div><h2>Take Attendance</h2><div class="muted">Full class attendance sheet</div></div></div>
+  <div class="field">
+   <label for="attDate">Attendance Date</label>
+   <input type="date" id="attDate" onchange="loadSheet()">
+  </div>
+  <div id="sheet"></div>
+  <div class="savebar">
+   <button id="saveAttendanceButton" class="btn primary savebig" onclick="saveAttendance()">✓ SAVE ATTENDANCE</button>
+  </div>
+ </div>
 </section>
 
 <section id="records" class="page">
-<button class="btn secondary back" onclick="openPage('home')">← Home</button>
-<div class="card">
-<div class="head"><h2>Attendance Records</h2></div>
-<div id="recordsList"></div>
-</div>
+ <button class="btn secondary back" onclick="openPage('home')">← Home</button>
+ <div class="card">
+  <div class="head"><h2>Attendance Records</h2></div>
+  <div id="recordsList"></div>
+ </div>
 </section>
 
 <section id="day" class="page">
-<button class="btn secondary back" onclick="openPage('records');renderRecords()">← Records</button>
-<div class="card">
-<div class="head">
-<div>
-<h2 id="dayHeading">Daily Report</h2>
-<div class="muted">Complete class report for this date</div>
-</div>
-</div>
-<div id="dayStats" class="four"></div>
-<div id="dayList" style="margin-top:15px"></div>
-</div>
+ <button class="btn secondary back" onclick="openPage('records');renderRecords()">← Records</button>
+ <div class="card">
+  <div class="head"><div><h2 id="dayHeading">Daily Report</h2><div class="muted">Complete class report for this date</div></div></div>
+  <div id="dayStats" class="four"></div>
+  <div id="dayList" style="margin-top:15px"></div>
+ </div>
 </section>
 
 <section id="studentDetail" class="page">
-<button class="btn secondary back" onclick="openPage('students');renderStudents()">← Students</button>
-<div class="card">
-<div class="head">
-<div>
-<h2 id="studentHeading">Student History</h2>
-<div id="studentInfo" class="muted"></div>
-</div>
-</div>
-<div id="studentStats" class="four"></div>
-<div id="studentHistory" style="margin-top:15px"></div>
-</div>
+ <button class="btn secondary back" onclick="openPage('students');renderStudents()">← Students</button>
+ <div class="card">
+  <div class="head"><div><h2 id="studentHeading">Student History</h2><div id="studentInfo" class="muted"></div></div></div>
+  <div id="studentStats" class="four"></div>
+  <div id="studentHistory" style="margin-top:15px"></div>
+ </div>
 </section>
 
 </main>
@@ -226,484 +254,571 @@ tbody tr:last-child td{border-bottom:0}
 <div class="footer">© Developed By <strong>Hasnain Ali</strong></div>
 </div>
 
-<div id="toast" class="toast"></div>
-<div id="firebaseStatus" class="firebase-status">⏳ Connecting...</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <div id="modalBg" class="modalbg">
-<div class="modal">
-<h3 id="modalTitle">Add Student</h3>
-<div class="field">
-<label>Student Name</label>
-<input id="name" autocomplete="off">
-</div>
-<div class="field">
-<label>Father Name</label>
-<input id="father" autocomplete="off">
-</div>
-<div class="field">
-<label>Roll Number</label>
-<input id="roll" inputmode="numeric" autocomplete="off">
-</div>
-<div class="row" style="justify-content:flex-end;margin-top:17px">
-<button class="btn secondary" onclick="closeModal()">Cancel</button>
-<button class="btn primary" onclick="saveStudent()">Save Student</button>
-</div>
-</div>
+ <div class="modal">
+  <h3 id="modalTitle">Add Student</h3>
+  <div class="field"><label for="name">Student Name</label><input id="name" autocomplete="off"></div>
+  <div class="field"><label for="father">Father Name</label><input id="father" autocomplete="off"></div>
+  <div class="field"><label for="roll">Roll Number</label><input id="roll" inputmode="numeric" autocomplete="off"></div>
+  <div class="row" style="justify-content:flex-end;margin-top:17px">
+   <button class="btn secondary" onclick="closeModal()">Cancel</button>
+   <button id="saveStudentButton" class="btn primary" onclick="saveStudent()">Save Student</button>
+  </div>
+ </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import {
-getFirestore, collection, doc, getDocs, setDoc, deleteDoc
+ getFirestore, collection, doc, getDocs, setDoc, deleteDoc
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+import {
+ getAuth, signInWithEmailAndPassword, onAuthStateChanged,
+ signOut, setPersistence, browserSessionPersistence
+} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 
 const firebaseConfig = {
-apiKey: "AIzaSyBZtKB8k3AgNZFN1OgmD7E3YG-eBLmFXho",
-authDomain: "attendance-app-49e61.firebaseapp.com",
-projectId: "attendance-app-49e61",
-storageBucket: "attendance-app-49e61.firebasestorage.app",
-messagingSenderId: "740101602702",
-appId: "1:740101602702:web:9ce69345cf8ce5b42378df"
+ apiKey: "AIzaSyBZtKB8k3AgNZFN1OgmD7E3YG-eBLmFXho",
+ authDomain: "attendance-app-49e61.firebaseapp.com",
+ projectId: "attendance-app-49e61",
+ storageBucket: "attendance-app-49e61.firebasestorage.app",
+ messagingSenderId: "740101602702",
+ appId: "1:740101602702:web:9ce69345cf8ce5b42378df"
 };
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const firestoreDB = getFirestore(app);
 
 let db = {students:[],records:{}};
 let editId = null;
 let firebaseReady = false;
+let appStarted = false;
+let toastTimer = null;
 
 const $ = id => document.getElementById(id);
 
 function today(){
-const d = new Date();
-return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+ const d = new Date();
+ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
 function esc(v){
-return String(v ?? '').replace(/[&<>"']/g,m=>({
-'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-}[m]));
+ return String(v ?? '').replace(/[&<>"']/g,m=>({
+  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+ }[m]));
 }
 
 function notify(msg){
-const t=$('toast');
-t.textContent=msg;
-t.classList.add('show');
-clearTimeout(window.toastTimer);
-window.toastTimer=setTimeout(()=>t.classList.remove('show'),2800);
+ const t=$('toast');
+ t.textContent=msg;
+ t.classList.add('show');
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>t.classList.remove('show'),2600);
 }
 
-function firebaseStatus(text,good=true){
-$('firebaseStatus').textContent=(good?'☁️ ':'⚠️ ')+text;
-$('firebaseStatus').style.color=good?'#087151':'#c62828';
+function showLoginMessage(msg){
+ $('loginMessage').textContent=msg;
+ $('loginMessage').classList.add('show');
 }
+
+function clearLoginMessage(){
+ $('loginMessage').textContent='';
+ $('loginMessage').classList.remove('show');
+}
+
+$('loginForm').addEventListener('submit',async event=>{
+ event.preventDefault();
+ clearLoginMessage();
+
+ const email=$('loginEmail').value.trim();
+ const password=$('loginPassword').value;
+ const button=$('loginButton');
+
+ button.disabled=true;
+ button.textContent='Logging in...';
+
+ try{
+  await setPersistence(auth,browserSessionPersistence);
+  await signInWithEmailAndPassword(auth,email,password);
+  // The authentication listener opens the app after successful login.
+ }catch(error){
+  console.error('Login error:',error);
+  let message='Login failed. Please check your email and password.';
+  if(error.code==='auth/invalid-credential' ||
+     error.code==='auth/wrong-password' ||
+     error.code==='auth/user-not-found'){
+   message='Email or password is incorrect.';
+  }else if(error.code==='auth/too-many-requests'){
+   message='Too many attempts. Please try again later.';
+  }else if(error.code==='auth/network-request-failed'){
+   message='Internet connection problem. Please try again.';
+  }else if(error.code==='auth/invalid-email'){
+   message='Please enter a valid email address.';
+  }else if(error.code==='auth/operation-not-allowed'){
+   message='Email/Password login is not enabled in Firebase.';
+  }
+  showLoginMessage(message);
+  button.disabled=false;
+  button.textContent='Login';
+ }
+});
+
+$('logoutButton').addEventListener('click',async()=>{
+ if(!confirm('Are you sure you want to log out?'))return;
+ try{
+  await signOut(auth);
+ }catch(error){
+  console.error('Logout error:',error);
+  notify('Could not log out. Please try again.');
+ }
+});
 
 function openPage(id){
-document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-$(id).classList.add('active');
-window.scrollTo(0,0);
+ document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+ $(id).classList.add('active');
+ window.scrollTo(0,0);
 }
 
 async function loadFirebaseData(){
-firebaseStatus('Connecting...');
-try{
-const [studentsSnap,recordsSnap]=await Promise.all([
-getDocs(collection(firestoreDB,'students')),
-getDocs(collection(firestoreDB,'attendance'))
-]);
+ firebaseReady=false;
+ try{
+  const [studentsSnap,recordsSnap]=await Promise.all([
+   getDocs(collection(firestoreDB,'students')),
+   getDocs(collection(firestoreDB,'attendance'))
+  ]);
 
-db.students=studentsSnap.docs.map(item=>({
-id:item.id,...item.data()
-}));
+  db.students=studentsSnap.docs.map(item=>({
+   id:item.id,...item.data()
+  }));
 
-db.records={};
+  db.records={};
+  recordsSnap.forEach(item=>{
+   const data=item.data();
+   const date=data.date||item.id;
+   db.records[date]={
+    attendance:data.attendance||{},
+    savedAt:data.savedAt||''
+   };
+  });
 
-recordsSnap.forEach(item=>{
-const data=item.data();
-const date=data.date||item.id;
-db.records[date]={
-attendance:data.attendance||{},
-savedAt:data.savedAt||''
-};
-});
-
-firebaseReady=true;
-firebaseStatus('Firebase Connected');
-updateDashboard();
-renderStudents();
-loadSheet();
-
-}catch(error){
-console.error('Firebase load failed:',error);
-firebaseReady=false;
-firebaseStatus('Firebase Error — check Rules',false);
-notify('Firebase connection failed. Check internet and Firestore Rules.');
-}
+  firebaseReady=true;
+  updateDashboard();
+  renderStudents();
+  renderRecords();
+  loadSheet();
+  return true;
+ }catch(error){
+  console.error('Firebase data load failed:',error);
+  firebaseReady=false;
+  notify('Data could not load. Check Firebase Rules or internet.');
+  return false;
+ }
 }
 
 async function saveStudentToFirebase(student){
-if(!firebaseReady){
-notify('Firebase not connected. Check internet and Rules.');
-return false;
-}
-try{
-await setDoc(doc(firestoreDB,'students',student.id),{
-name:student.name,
-father:student.father,
-roll:student.roll
-});
-return true;
-}catch(error){
-console.error(error);
-notify('Student save failed. Check Firestore Rules.');
-return false;
-}
+ if(!firebaseReady){
+  notify('Data is not ready. Please reload the app.');
+  return false;
+ }
+ try{
+  await setDoc(doc(firestoreDB,'students',student.id),{
+   name:student.name,
+   father:student.father,
+   roll:student.roll
+  });
+  return true;
+ }catch(error){
+  console.error('Student save failed:',error);
+  notify('Student could not be saved. Check Firebase Rules.');
+  return false;
+ }
 }
 
 function openStudentModal(id=null){
-editId=id;
-$('modalTitle').textContent=id?'Edit Student':'Add Student';
-const s=id?db.students.find(x=>x.id===id):null;
-$('name').value=s?.name||'';
-$('father').value=s?.father||'';
-$('roll').value=s?.roll||'';
-$('modalBg').classList.add('show');
-setTimeout(()=>$('name').focus(),100);
+ editId=id;
+ $('modalTitle').textContent=id?'Edit Student':'Add Student';
+ const s=id?db.students.find(x=>x.id===id):null;
+ $('name').value=s?.name||'';
+ $('father').value=s?.father||'';
+ $('roll').value=s?.roll||'';
+ $('modalBg').classList.add('show');
+ setTimeout(()=>$('name').focus(),100);
 }
 
 function closeModal(){
-$('modalBg').classList.remove('show');
+ $('modalBg').classList.remove('show');
 }
 
 async function saveStudent(){
-const name=$('name').value.trim();
-const father=$('father').value.trim();
-const roll=$('roll').value.trim();
+ const name=$('name').value.trim();
+ const father=$('father').value.trim();
+ const roll=$('roll').value.trim();
 
-if(!name||!father||!roll){
-notify('Please fill all student fields');
-return;
-}
+ if(!name||!father||!roll){
+  notify('Please fill all student fields.');
+  return;
+ }
 
-if(db.students.some(s=>String(s.roll).toLowerCase()===roll.toLowerCase()&&s.id!==editId)){
-notify('Roll number already exists');
-return;
-}
+ if(db.students.some(s=>String(s.roll).toLowerCase()===roll.toLowerCase()&&s.id!==editId)){
+  notify('Roll number already exists.');
+  return;
+ }
 
-if(!firebaseReady){
-notify('Firebase is not connected. Student not saved.');
-return;
-}
+ if(!firebaseReady){
+  notify('Data is not ready. Please reload the app.');
+  return;
+ }
 
-const old=editId?db.students.find(x=>x.id===editId):null;
-const student={
-id:editId||Date.now().toString(),
-name,father,roll
-};
+ const old=editId?db.students.find(x=>x.id===editId):null;
+ const student={id:editId||Date.now().toString(),name,father,roll};
+ const button=$('saveStudentButton');
+ button.disabled=true;
+ button.textContent='Saving...';
 
-const ok=await saveStudentToFirebase(student);
-if(!ok)return;
+ try{
+  const ok=await saveStudentToFirebase(student);
+  if(!ok)return;
 
-if(old){
-Object.assign(old,student);
-}else{
-db.students.push(student);
-}
+  if(old)Object.assign(old,student);
+  else db.students.push(student);
 
-closeModal();
-renderStudents();
-updateDashboard();
-loadSheet();
-notify(old?'Student updated':'Student saved to Firebase');
+  closeModal();
+  renderStudents();
+  updateDashboard();
+  loadSheet();
+  notify(old?'Student updated successfully.':'Student saved successfully.');
+ }finally{
+  button.disabled=false;
+  button.textContent='Save Student';
+ }
 }
 
 function renderStudents(){
-const q=($('search')?.value||'').trim().toLowerCase();
-const arr=db.students.filter(s=>
-(`${s.name||''} ${s.father||''} ${s.roll||''}`).toLowerCase().includes(q)
-);
+ const q=($('search')?.value||'').trim().toLowerCase();
+ const arr=db.students.filter(s=>
+  (`${s.name||''} ${s.father||''} ${s.roll||''}`).toLowerCase().includes(q)
+ );
 
-$('studentList').innerHTML=arr.length?arr.map(s=>`
-<div class="student">
-<div>
-<div class="name">${esc(s.name)}</div>
-<div class="small">Father: ${esc(s.father)} · Roll No: ${esc(s.roll)}</div>
-</div>
-<div class="row">
-<button class="btn secondary" onclick="openStudentModal('${esc(s.id)}')">Edit</button>
-<button class="btn danger" onclick="removeStudent('${esc(s.id)}')">Delete</button>
-<button class="btn secondary" onclick="showStudentHistory('${esc(s.id)}')">History</button>
-</div>
-</div>
-`).join(''):'<div class="empty">No students found.</div>';
+ $('studentList').innerHTML=arr.length?arr.map(s=>`
+  <div class="student">
+   <div>
+    <div class="name">${esc(s.name)}</div>
+    <div class="small">Father: ${esc(s.father)} · Roll No: ${esc(s.roll)}</div>
+   </div>
+   <div class="row">
+    <button class="btn secondary" onclick="openStudentModal('${esc(s.id)}')">Edit</button>
+    <button class="btn danger" onclick="removeStudent('${esc(s.id)}')">Delete</button>
+    <button class="btn secondary" onclick="showStudentHistory('${esc(s.id)}')">History</button>
+   </div>
+  </div>
+ `).join(''):'<div class="empty">No students found.</div>';
 }
 
 async function removeStudent(id){
-const s=db.students.find(x=>x.id===id);
-if(!s)return;
-if(!confirm(`Delete ${s.name}?`))return;
-if(!firebaseReady){
-notify('Firebase is not connected');
-return;
-}
-try{
-await deleteDoc(doc(firestoreDB,'students',id));
-db.students=db.students.filter(x=>x.id!==id);
-renderStudents();
-updateDashboard();
-loadSheet();
-notify('Student deleted');
-}catch(error){
-console.error(error);
-notify('Student could not be deleted. Check Rules.');
-}
+ const s=db.students.find(x=>x.id===id);
+ if(!s)return;
+ if(!confirm(`Delete ${s.name}?`))return;
+ if(!firebaseReady){notify('Data is not ready. Please reload the app.');return;}
+
+ try{
+  await deleteDoc(doc(firestoreDB,'students',id));
+  db.students=db.students.filter(x=>x.id!==id);
+  renderStudents();
+  updateDashboard();
+  loadSheet();
+  notify('Student deleted successfully.');
+ }catch(error){
+  console.error('Student delete failed:',error);
+  notify('Student could not be deleted. Check Firebase Rules.');
+ }
 }
 
 function startAttendance(){
-if(!$('attDate').value)$('attDate').value=today();
-loadSheet();
+ if(!$('attDate').value)$('attDate').value=today();
+ loadSheet();
 }
 
-function loadSheet(){
-const date=$('attDate').value;
-if(!date)return;
+  function loadSheet(){
+ const date=$('attDate').value;
+ if(!date)return;
 
-if(!db.students.length){
-$('sheet').innerHTML='<div class="empty">Please add students first.</div>';
-return;
-}
+ if(!db.students.length){
+  $('sheet').innerHTML='<div class="empty">Please add students first.</div>';
+  return;
+ }
 
-const a=db.records[date]?.attendance||{};
+ const a=db.records[date]?.attendance||{};
 
-$('sheet').innerHTML=`
-<div class="detailbox">
-<b>${esc(date)}</b>
-<div class="muted">Mark Present or Absent for every student.</div>
-</div>
-<div class="sheetwrap" style="margin-top:12px">
-<table>
-<thead><tr><th>#</th><th>Student Name</th><th>Father Name</th><th>Roll No</th><th>Status</th></tr></thead>
-<tbody>
-${db.students.map((s,i)=>{
-const st=a[s.id]||'';
-return `
-<tr>
-<td>${i+1}</td>
-<td><b>${esc(s.name)}</b></td>
-<td>${esc(s.father)}</td>
-<td>${esc(s.roll)}</td>
-<td>
-<button class="att p ${st==='Present'?'selected':''}" onclick="setStatus('${esc(s.id)}','Present')">Present</button>
-<button class="att a ${st==='Absent'?'selected':''}" onclick="setStatus('${esc(s.id)}','Absent')">Absent</button>
-</td>
-</tr>`;
-}).join('')}
-</tbody>
-</table>
-</div>`;
+ $('sheet').innerHTML=`
+  <div class="detailbox">
+   <b>${esc(date)}</b>
+   <div class="muted">Mark Present or Absent for every student.</div>
+  </div>
+  <div class="sheetwrap" style="margin-top:12px">
+   <table>
+    <thead><tr><th>#</th><th>Student Name</th><th>Father Name</th><th>Roll No</th><th>Status</th></tr></thead>
+    <tbody>
+     ${db.students.map((s,i)=>{
+      const st=a[s.id]||'';
+      return `<tr>
+       <td>${i+1}</td>
+       <td><b>${esc(s.name)}</b></td>
+       <td>${esc(s.father)}</td>
+       <td>${esc(s.roll)}</td>
+       <td>
+        <button class="att p ${st==='Present'?'selected':''}" onclick="setStatus('${esc(s.id)}','Present')">Present</button>
+        <button class="att a ${st==='Absent'?'selected':''}" onclick="setStatus('${esc(s.id)}','Absent')">Absent</button>
+       </td>
+      </tr>`;
+     }).join('')}
+    </tbody>
+   </table>
+  </div>`;
 }
 
 function setStatus(id,status){
-const date=$('attDate').value;
-if(!date)return;
-db.records[date] ||= {attendance:{},savedAt:''};
-db.records[date].attendance ||= {};
-db.records[date].attendance[id]=status;
-loadSheet();
-updateDashboard();
-}
+ const date=$('attDate').value;
+ if(!date)return;
+ db.records[date] ||= {attendance:{},savedAt:''};
+ db.records[date].attendance ||= {};
+ db.records[date].attendance[id]=status;
+ loadSheet();
+ updateDashboard();
+  }
 
-async function saveAttendance(){
-const date=$('attDate').value;
-if(!date){
-notify('Select attendance date');
-return;
-}
-if(!db.students.length){
-notify('Add students first');
-return;
-}
+  async function saveAttendance(){
+ const date=$('attDate').value;
+ if(!date){notify('Select attendance date.');return;}
+ if(!db.students.length){notify('Add students first.');return;}
 
-db.records[date] ||= {attendance:{},savedAt:''};
-db.records[date].attendance ||= {};
+ db.records[date] ||= {attendance:{},savedAt:''};
+ db.records[date].attendance ||= {};
 
-const missing=db.students.filter(s=>!db.records[date].attendance[s.id]);
-if(missing.length){
-notify(`Mark attendance for all students (${missing.length} left)`);
-return;
-}
+ const missing=db.students.filter(s=>!db.records[date].attendance[s.id]);
+ if(missing.length){
+  notify(`Mark attendance for all students. ${missing.length} left.`);
+  return;
+ }
 
-if(!firebaseReady){
-notify('Firebase is not connected. Attendance not saved.');
-return;
-}
+ if(!firebaseReady){
+  notify('Data is not ready. Please reload the app.');
+  return;
+ }
 
-const record={
-date,
-attendance:{...db.records[date].attendance},
-savedAt:new Date().toISOString()
-};
+ const record={
+  date,
+  attendance:{...db.records[date].attendance},
+  savedAt:new Date().toISOString()
+ };
 
-try{
-await setDoc(doc(firestoreDB,'attendance',date),record);
-db.records[date]=record;
-updateDashboard();
-renderRecords();
-loadSheet();
-notify('Attendance saved successfully');
-}catch(error){
-console.error(error);
-notify('Attendance save failed. Check Firestore Rules.');
-}
+ const button=$('saveAttendanceButton');
+ button.disabled=true;
+ button.textContent='Saving...';
+
+ try{
+  await setDoc(doc(firestoreDB,'attendance',date),record);
+  db.records[date]=record;
+  updateDashboard();
+  renderRecords();
+  loadSheet();
+  notify('Attendance saved successfully.');
+ }catch(error){
+  console.error('Attendance save failed:',error);
+  notify('Attendance could not be saved. Check Firebase Rules.');
+ }finally{
+  button.disabled=false;
+  button.textContent='✓ SAVE ATTENDANCE';
+ }
 }
 
 function countsFor(date){
-const attendance=db.records[date]?.attendance||{};
-let present=0,absent=0;
-db.students.forEach(s=>{
-if(attendance[s.id]==='Present')present++;
-else if(attendance[s.id]==='Absent')absent++;
-});
-const marked=present+absent;
-return {
-present,absent,marked,total:db.students.length,
-percent:marked?Math.round(present/marked*100):0
-};
+ const attendance=db.records[date]?.attendance||{};
+ let present=0,absent=0;
+ db.students.forEach(s=>{
+     if(attendance[s.id]==='Present')present++;
+  else if(attendance[s.id]==='Absent')absent++;
+ });
+ const marked=present+absent;
+ return {
+  present,absent,marked,total:db.students.length,
+  percent:marked?Math.round(present/marked*100):0
+ };
 }
 
 function updateDashboard(){
-const c=countsFor(today());
-$('sTotal').textContent=db.students.length;
-$('sPresent').textContent=c.present;
-$('sAbsent').textContent=c.absent;
-$('sPercent').textContent=c.marked?Math.round(c.present/c.marked*100)+'%':'0%';
+ const c=countsFor(today());
+ $('sTotal').textContent=db.students.length;
+ $('sPresent').textContent=c.present;
+ $('sAbsent').textContent=c.absent;
+ $('sPercent').textContent=c.marked?c.percent+'%':'0%';
 }
 
 function renderRecords(){
-const dates=Object.keys(db.records)
-.filter(d=>db.records[d]?.attendance)
-.sort((a,b)=>b.localeCompare(a));
+ const dates=Object.keys(db.records)
+  .filter(d=>db.records[d]?.attendance)
+  .sort((a,b)=>b.localeCompare(a));
 
-$('recordsList').innerHTML=dates.length?dates.map(date=>{
-const c=countsFor(date);
-return `
-<div class="record">
-<div class="recorddate">${esc(date)}</div>
-<div class="metrics">
-<span class="badge bp">Present: ${c.present}</span>
-<span class="badge ba">Absent: ${c.absent}</span>
-<span class="badge">Attendance: ${c.marked?Math.round(c.present/c.marked*100):0}%</span>
-<span class="badge">Marked: ${c.marked}/${c.total}</span>
-</div>
-<div class="row">
-<button class="btn secondary" onclick="showDay('${esc(date)}')">View full report</button>
-<button class="btn danger" onclick="removeAttendance('${esc(date)}')">Delete record</button>
-</div>
-</div>`;
-}).join(''):'<div class="empty">No attendance records saved yet.</div>';
+ $('recordsList').innerHTML=dates.length?dates.map(date=>{
+  const c=countsFor(date);
+  return `<div class="record">
+   <div class="recorddate">${esc(date)}</div>
+   <div class="metrics">
+    <span class="badge bp">Present: ${c.present}</span>
+    <span class="badge ba">Absent: ${c.absent}</span>
+    <span class="badge">Attendance: ${c.percent}%</span>
+    <span class="badge">Marked: ${c.marked}/${c.total}</span>
+   </div>
+   <div class="row">
+    <button class="btn secondary" onclick="showDay('${esc(date)}')">View full report</button>
+    <button class="btn danger" onclick="removeAttendance('${esc(date)}')">Delete record</button>
+   </div>
+  </div>`;
+ }).join(''):'<div class="empty">No attendance records saved yet.</div>';
 }
 
 function showDay(date){
-openPage('day');
-const c=countsFor(date);
-$('dayHeading').textContent='Attendance: '+date;
-$('dayStats').innerHTML=`
-<div class="mini">Total<b>${c.total}</b></div>
-<div class="mini">Present<b>${c.present}</b></div>
-<div class="mini">Absent<b>${c.absent}</b></div>
-<div class="mini">Percentage<b>${c.marked?Math.round(c.present/c.marked*100):0}%</b></div>`;
+ openPage('day');
+ const c=countsFor(date);
+ $('dayHeading').textContent='Attendance: '+date;
+ $('dayStats').innerHTML=`
+  <div class="mini">Total<b>${c.total}</b></div>
+  <div class="mini">Present<b>${c.present}</b></div>
+  <div class="mini">Absent<b>${c.absent}</b></div>
+  <div class="mini">Percentage<b>${c.percent}%</b></div>`;
 
-const a=db.records[date]?.attendance||{};
-$('dayList').innerHTML=db.students.length?db.students.map(s=>`
-<div class="student">
-<div>
-<div class="name">${esc(s.name)}</div>
-<div class="small">Roll No: ${esc(s.roll)} · Father: ${esc(s.father)}</div>
-</div>
-<span class="badge ${a[s.id]==='Present'?'bp':a[s.id]==='Absent'?'ba':''}">${esc(a[s.id]||'Not marked')}</span>
-<button class="btn secondary" onclick="showStudentHistory('${esc(s.id)}')">Student history</button>
-</div>
-`).join(''):'<div class="empty">No students available.</div>';
+ const a=db.records[date]?.attendance||{};
+ $('dayList').innerHTML=db.students.length?db.students.map(s=>`
+  <div class="student">
+   <div>
+    <div class="name">${esc(s.name)}</div>
+    <div class="small">Roll No: ${esc(s.roll)} · Father: ${esc(s.father)}</div>
+   </div>
+   <span class="badge ${a[s.id]==='Present'?'bp':a[s.id]==='Absent'?'ba':''}">${esc(a[s.id]||'Not marked')}</span>
+   <button class="btn secondary" onclick="showStudentHistory('${esc(s.id)}')">Student history</button>
+  </div>
+ `).join(''):'<div class="empty">No students available.</div>';
 }
 
 function showStudentHistory(id){
-openPage('studentDetail');
-const s=db.students.find(x=>x.id===id);
-if(!s){
-notify('Student not found');
-return;
-}
-$('studentHeading').textContent=s.name;
-$('studentInfo').textContent=`Father: ${s.father} · Roll No: ${s.roll}`;
+ openPage('studentDetail');
+ const s=db.students.find(x=>x.id===id);
+ if(!s){
+  notify('Student not found.');
+  return;
+ }
 
-const dates=Object.keys(db.records)
-.filter(d=>db.records[d]?.attendance?.[id])
-.sort((a,b)=>b.localeCompare(a));
+ $('studentHeading').textContent=s.name;
+ $('studentInfo').textContent=`Father: ${s.father} · Roll No: ${s.roll}`;
 
-let present=0,absent=0;
-dates.forEach(d=>{
-if(db.records[d].attendance[id]==='Present')present++;
-if(db.records[d].attendance[id]==='Absent')absent++;
-});
+ const dates=Object.keys(db.records)
+  .filter(d=>db.records[d]?.attendance?.[id])
+  .sort((a,b)=>b.localeCompare(a));
 
-const total=present+absent;
-const percent=total?Math.round(present/total*100):0;
+ let present=0,absent=0;
+ dates.forEach(d=>{
+  if(db.records[d].attendance[id]==='Present')present++;
+  if(db.records[d].attendance[id]==='Absent')absent++;
+ });
 
-$('studentStats').innerHTML=`
-<div class="mini">Present<b>${present}</b></div>
-<div class="mini">Absent<b>${absent}</b></div>
-<div class="mini">Days marked<b>${total}</b></div>
-<div class="mini">Percentage<b>${percent}%</b></div>`;
+ const total=present+absent;
+ const percent=total?Math.round(present/total*100):0;
 
-$('studentHistory').innerHTML=dates.length?dates.map(d=>`
-<div class="record">
-<div class="recorddate">${esc(d)}</div>
-<span class="badge ${db.records[d].attendance[id]==='Present'?'bp':'ba'}">${esc(db.records[d].attendance[id])}</span>
-</div>
-`).join(''):'<div class="empty">No attendance history for this student yet.</div>';
+ $('studentStats').innerHTML=`
+  <div class="mini">Present<b>${present}</b></div>
+  <div class="mini">Absent<b>${absent}</b></div>
+  <div class="mini">Days marked<b>${total}</b></div>
+  <div class="mini">Percentage<b>${percent}%</b></div>`;
+
+ $('studentHistory').innerHTML=dates.length?dates.map(d=>`
+  <div class="record">
+   <div class="recorddate">${esc(d)}</div>
+   <span class="badge ${db.records[d].attendance[id]==='Present'?'bp':'ba'}">${esc(db.records[d].attendance[id])}</span>
+  </div>
+ `).join(''):'<div class="empty">No attendance history for this student yet.</div>';
 }
 
 async function removeAttendance(date){
-if(!confirm(`Delete attendance record for ${date}?`))return;
-if(!firebaseReady){
-notify('Firebase is not connected');
-return;
-}
-try{
-await deleteDoc(doc(firestoreDB,'attendance',date));
-delete db.records[date];
-renderRecords();
-updateDashboard();
-notify('Attendance record deleted');
-}catch(error){
-console.error(error);
-notify('Could not delete attendance record. Check Rules.');
-}
+ if(!confirm(`Delete attendance record for ${date}?`))return;
+ if(!firebaseReady){
+  notify('Data is not ready. Please reload the app.');
+  return;
+ }
+
+ try{
+  await deleteDoc(doc(firestoreDB,'attendance',date));
+  delete db.records[date];
+  renderRecords();
+  updateDashboard();
+  notify('Attendance record deleted.');
+ }catch(error){
+  console.error('Attendance delete failed:',error);
+  notify('Could not delete record. Check Firebase Rules.');
+ }
 }
 
 async function startApp(){
-if(!$('attDate').value)$('attDate').value=today();
-await loadFirebaseData();
-renderRecords();
-loadSheet();
-updateDashboard();
+ if(!$('attDate').value)$('attDate').value=today();
+ await loadFirebaseData();
+ renderRecords();
+ loadSheet();
+ updateDashboard();
 }
 
 Object.assign(window,{
-openPage,renderStudents,openStudentModal,closeModal,saveStudent,
-removeStudent,startAttendance,loadSheet,setStatus,saveAttendance,
-renderRecords,showDay,showStudentHistory,removeAttendance
+ openPage,
+ renderStudents,
+ openStudentModal,
+ closeModal,
+ saveStudent,
+ removeStudent,
+ startAttendance,
+ loadSheet,
+ setStatus,
+ saveAttendance,
+ renderRecords,
+ showDay,
+ showStudentHistory,
+ removeAttendance
 });
 
-startApp();
+/* Login session and app startup */
+onAuthStateChanged(auth,async user=>{
+ if(user){
+  $('loginScreen').classList.remove('show');
+  $('loginScreen').style.display='none';
+  document.querySelector('.app').style.display='block';
+  $('loginButton').disabled=false;
+  $('loginButton').textContent='Login';
+  clearLoginMessage();
 
+  if(!appStarted){
+   appStarted=true;
+   await startApp();
+  }
+ }else{
+  appStarted=false;
+  firebaseReady=false;
+  db={students:[],records:{}};
+  document.querySelector('.app').style.display='none';
+  $('loginScreen').classList.add('show');
+  $('loginButton').disabled=false;
+  $('loginButton').textContent='Login';
+ }
+});
+
+/* PWA service worker */
 if('serviceWorker' in navigator){
-window.addEventListener('load',()=>{
-navigator.serviceWorker.register('./sw.js')
-.catch(error=>console.error('Service worker registration failed:',error));
-});
+ window.addEventListener('load',()=>{
+  navigator.serviceWorker.register('./sw.js')
+   .catch(error=>console.error('Service worker registration failed:',error));
+ });
 }
+
 </script>
 </body>
 </html>
+
+  
